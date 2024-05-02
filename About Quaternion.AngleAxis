@@ -1,0 +1,61 @@
+参考：
+https://nekojara.city/unity-circular-motion
+
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
+using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEditor.PlayerSettings;
+
+public class CircleMove2 : MonoBehaviour
+{
+    // 中心点
+    [SerializeField] private Vector3 _center = Vector3.zero;
+
+    // 回転軸
+    [SerializeField] private Vector3 _axis;
+
+    // 円運動周期
+    [SerializeField] private float _period = 2;
+
+    [SerializeField] private Transform tr;
+
+    [SerializeField] private float x;
+    [SerializeField] private float y;
+    [SerializeField] private float z;
+
+    [SerializeField] private float rad;
+
+    private void Start()
+    {
+        rad = 0f;
+        x = Mathf.Cos(2 * Mathf.PI * (rad / _period));
+        y = Mathf.Sin(2 * Mathf.PI * (rad / _period));
+        z = Mathf.Sin(2 * Mathf.PI * (rad / _period));
+
+        _axis = new Vector3(x, y, z);
+    }
+
+    private void Update()
+    {
+        // 回転のクォータニオン作成
+        var angleAxis = Quaternion.AngleAxis(360 / _period * Time.deltaTime, _axis);
+
+        // 円運動の位置計算
+        var pos = tr.position;
+
+        //新しい円運動の位置計算の結果更新
+        tr.position = angleAxis * pos;
+
+        //回転軸の変更
+        rad += Time.deltaTime * 0.05f;
+        x = Mathf.Cos(2 * Mathf.PI * (rad / _period));
+        y = Mathf.Sin(2 * Mathf.PI * (rad / _period));
+        z = Mathf.Sin(2 * Mathf.PI * (rad / _period));
+        _axis = new Vector3(x, y, z);
+
+    }
+}
